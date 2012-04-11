@@ -19,16 +19,6 @@ ActiveRecord::Schema.define(:version => 20120411085514) do
     t.datetime "updated_at", :null => false
   end
 
-  create_table "tags", :force => true do |t|
-    t.string   "name"
-    t.integer  "rating"
-    t.integer  "user_id"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
-  end
-
-  add_index "tags", ["user_id"], :name => "index_tags_on_user_id"
-
   create_table "user_interests", :force => true do |t|
     t.integer  "user_id"
     t.integer  "interest_id"
