@@ -14,9 +14,19 @@ User C beer, cheese, eggs
 User B and C are more similar because they share 2 interests rather than 1.
 
 To find the correlation between two users
-1) For every pair of users, find all the similar interests
-2) Create two vectors, for user 1 and user 2
-3) Calculate the correlation between the two vectors
-4) For each user, rank the users based on the correlation
 
+1) For every pair of users (user 1 and user 2), find all the similar interests
+2) Get the number of similar interests and create a related record
 
+User.all.each do |user1|
+  user2 = user1.next # def user1.next; User.where("id > ?", self.id).first; end
+  if user2
+    similar_interests = user1.interests.map(&:id) & user2.interests.map(&:id)
+    user1.related.create(count: similar_interests.count, related_user: user2)
+    user2.related.create(count: similar_interests.count, related_user: user1)
+  end
+end
+
+3) When you need to find related users you, sort by their related count
+
+User.find(id).related.order(:count)
