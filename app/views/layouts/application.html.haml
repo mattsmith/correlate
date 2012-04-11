@@ -6,12 +6,20 @@
     = javascript_include_tag "application"
     = csrf_meta_tags
   %body
-    %header
-      %h1 Correlate
-      #nav-top
-        %ul.nav
-          %li
+    .navbar.navbar-fixed-top
+      .navbar-inner
+        .container
+          .brand
+            %h1 Correlate
+          #nav-top
+            %ul.nav
+              - if user_signed_in?
+                %li= link_to "Sign Out", "#"
+              - else
+                %li= link_to "Create Account", new_user_registration_path
         
       
-    = yield
+    .container
+      .content{role: "main"}
+        = yield
     
