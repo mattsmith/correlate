@@ -19,21 +19,22 @@ To find the correlation between two users
 2) Get the number of similar interests and total number of interests
 3) Calculate the correlation (similar/total or intersection/union) 
 
-# Iterate through each user
-User.all.each do |user1|
+  # Iterate through each user
 
-  User.all.each do |user2|
-    unless user2 == user1 # don't match the user to themselves
-      # Get the intersection (similar) and union (total) of the users interests
-      similar_interests = user1.interests.map(&:id) & user2.interests.map(&:id)
-      total_interests = user1.interests.map(&:id) | user2.interests.map(&:id)
+  User.all.each do |user1|
 
-      # Calulate the correlation
-      jaccard_correlation = (similar_interests.count.to_f/total_interests.count.to_f).round(3)
+    User.all.each do |user2|
+      unless user2 == user1 # don't match the user to themselves
+        # Get the intersection (similar) and union (total) of the users interests
+        similar_interests = user1.interests.map(&:id) & user2.interests.map(&:id)
+        total_interests = user1.interests.map(&:id) | user2.interests.map(&:id)
 
-      # Store the results for each user
-      user1.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user2)
+        # Calulate the correlation
+        jaccard_correlation = (similar_interests.count.to_f/total_interests.count.to_f).round(3)
+
+        # Store the results for each user
+        user1.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user2)
+      end
     end
-  end
 
-end
+  end
