@@ -1,17 +1,27 @@
-
-%h1 Find people similar to you
-
 - if user_signed_in?
+  .page-header
+    %h2 Find people similar to you
+  
   .row
     .span4
       = form_for :interest do |f|
         = f.label :name, "Add your interests"
         = f.text_field :name
     .span4
-      - current_user.related.sorted.each do |related|
-        = "#{related.paired.email} (#{related.correlation})"
+      .update
+        = link_to "Update your Matches", correlate_interests_path, class: "btn btn-success", method: :post
+      .matches
+        - current_user.related.sorted.each do |related|
+          = "#{related.paired.email} (#{related.correlation})"
     .span4
       %h3 My Interests
       %ul
         - current_user.interests.each do |interest|
           %li= interest.name
+- else
+  .hero-unit
+    .inner
+      %h1 Find people similar to you
+      %p Sign up, enter your interests and connect with similar people
+      %p
+        = link_to "Sign Up", new_user_registration_path, class: "btn btn-primary btn-large"
