@@ -1,14 +1,17 @@
 
-%h1 Find people similar to your
-
-%ol
-  %li Create an Account
-  %li Choose your interests
-  %li Get your matches
+%h1 Find people similar to you
 
 - if user_signed_in?
   .row
-    .span12
+    .span4
       = form_for :interest do |f|
-        = f.label :name
+        = f.label :name, "Add your interests"
         = f.text_field :name
+    .span4
+      - current_user.related.sorted.each do |related|
+        = "#{related.paired.email} (#{related.correlation})"
+    .span4
+      %h3 My Interests
+      %ul
+        - current_user.interests.each do |interest|
+          %li= interest.name

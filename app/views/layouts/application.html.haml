@@ -14,7 +14,7 @@
           #nav-top
             %ul.nav
               - if user_signed_in?
-                %li= link_to "Sign Out", "#"
+                %li= link_to "Sign Out", destroy_user_session_path
               - else
                 %li= link_to "Create Account", new_user_registration_path
         

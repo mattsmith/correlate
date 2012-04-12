@@ -11,4 +11,8 @@ class User < ActiveRecord::Base
   has_many :user_interests, dependent: :destroy
   has_many :interests, through: :user_interests
   has_many :related, dependent: :destroy
+
+  def next
+    User.where("id > ?", self.id).order(:id).first
+  end
 end

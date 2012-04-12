@@ -13,20 +13,35 @@ User C beer, cheese, eggs
 
 User B and C are more similar because they share 2 interests rather than 1.
 
+Essentially this is Jaccard Correlation, the intersection of 2 sets divided by their union.
+
 To find the correlation between two users
 
 1) For every pair of users (user 1 and user 2), find all the similar interests
-2) Get the number of similar interests and create a related record
+2) Get the number of similar interests and total number of interests
+3) Calculate the correlation (similar/total or intersection/union) 
 
+# Iterate through each user
 User.all.each do |user1|
-  user2 = user1.next # def user1.next; User.where("id > ?", self.id).first; end
+  # Get the next user to pair with
+  user2 = user1.next
+
   if user2
+
+    # Get the intersection (similar) and union (total) of the users interests
     similar_interests = user1.interests.map(&:id) & user2.interests.map(&:id)
-    user1.related.create(count: similar_interests.count, related_user: user2)
-    user2.related.create(count: similar_interests.count, related_user: user1)
+    total_interests = user1.interests.map(&:id) | user2.interests.map(&:id)
+
+    # Calulate the correlation
+    jaccard_correlation = similar_interests/total_interests
+
+    # Store the results for each user
+    user1.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user2)
+    user2.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user1)
   end
+
 end
 
-3) When you need to find related users you, sort by their related count
+4) When you need to find related users you, sort by their correlation
 
-User.find(id).related.order(:count)
+User.find(id).related.order(:correlation)

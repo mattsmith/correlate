@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20120411092621) do
+ActiveRecord::Schema.define(:version => 20120411221449) do
 
   create_table "interests", :force => true do |t|
     t.string   "name"
@@ -23,8 +23,9 @@ ActiveRecord::Schema.define(:version => 20120411092621) do
     t.integer  "user_id"
     t.integer  "paired_id"
     t.integer  "count"
-    t.datetime "created_at", :null => false
-    t.datetime "updated_at", :null => false
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+    t.float    "correlation"
   end
 
   add_index "relateds", ["user_id"], :name => "index_relateds_on_user_id"
