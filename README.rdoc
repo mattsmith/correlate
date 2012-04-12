@@ -1,10 +1,10 @@
 == Correlate
 
-The purpose of correlate is to apply mathematics to finding people with similar interests as you.
+The purpose of correlate is to find people with similar interests as you.
 
 One way to solve this problem is through correlation of interests.
 
-To start we need interest and people.
+To start we need interests and people.
 
 For example, consider we have 3 people
 User A chocolate, bread, eggs
@@ -12,8 +12,6 @@ User B chocolate, beer, cheese
 User C beer, cheese, eggs
 
 User B and C are more similar because they share 2 interests rather than 1.
-
-Essentially this is Jaccard Correlation, the intersection of 2 sets divided by their union.
 
 To find the correlation between two users
 
@@ -23,25 +21,19 @@ To find the correlation between two users
 
 # Iterate through each user
 User.all.each do |user1|
-  # Get the next user to pair with
-  user2 = user1.next
 
-  if user2
+  User.all.each do |user2|
+    unless user2 == user1 # don't match the user to themselves
+      # Get the intersection (similar) and union (total) of the users interests
+      similar_interests = user1.interests.map(&:id) & user2.interests.map(&:id)
+      total_interests = user1.interests.map(&:id) | user2.interests.map(&:id)
 
-    # Get the intersection (similar) and union (total) of the users interests
-    similar_interests = user1.interests.map(&:id) & user2.interests.map(&:id)
-    total_interests = user1.interests.map(&:id) | user2.interests.map(&:id)
+      # Calulate the correlation
+      jaccard_correlation = (similar_interests.count.to_f/total_interests.count.to_f).round(3)
 
-    # Calulate the correlation
-    jaccard_correlation = similar_interests/total_interests
-
-    # Store the results for each user
-    user1.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user2)
-    user2.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user1)
+      # Store the results for each user
+      user1.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user2)
+    end
   end
 
 end
-
-4) When you need to find related users you, sort by their correlation
-
-User.find(id).related.order(:correlation)
