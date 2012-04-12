@@ -11,11 +11,12 @@
       .update
         = link_to "Update your Matches", correlate_interests_path, class: "btn btn-success", method: :post
       .matches
-        - current_user.related.sorted.each do |related|
-          = "#{related.paired.email} (#{related.correlation})"
+        %ul.unstyled
+          - current_user.related.sorted.each do |related|
+            %li= "@#{related.paired.twitter} (similarity #{related.correlation})"
     .span4
       %h3 My Interests
-      %ul
+      %ul.unstyled
         - current_user.interests.each do |interest|
           %li= interest.name
 - else

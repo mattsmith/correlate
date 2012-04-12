@@ -30,27 +30,8 @@ class InterestsController < ApplicationController
 
   def correlate
 
-    # Reset all the correlations for related pairs
-    Related.destroy_all
+    Related.correlate
 
-    User.all.each do |user1|
-      # Get the next user to pair with
-      user2 = user1.next
-
-      if user2
-        # Get the intersection (similar) and union (total) of the users interests
-        logger.debug similar_interests = user1.interests.map(&:id) & user2.interests.map(&:id)
-        logger.debug total_interests = user1.interests.map(&:id) | user2.interests.map(&:id)
-
-        # Calulate the correlation
-        logger.debug jaccard_correlation = (similar_interests.count.to_f/total_interests.count.to_f).round(3)
-
-        # Store the results for each user
-        user1.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user2)
-        user2.related.create(count: similar_interests.count, correlation: jaccard_correlation, paired: user1)
-      end
-
-    end
     redirect_to root_url, notice: "Your matches have been updated."
   end
 
